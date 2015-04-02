@@ -8,6 +8,9 @@ class Board{
         Board(int size);
         ~Board();
         print();
+        int validateMove(int x, int y);
+        insertMove(int player, int x, int y);
+        bool win();
         
     private:
         int board_size;
@@ -35,10 +38,11 @@ Board::~Board(){
         delete[] cells[i];
     }
     delete[] cells;
-    cout << endl << "Array deleted";
+    //cout << endl << "Array deleted";
 }
 
 Board::print(){
+    cout << endl;
     for (int i=0; i < board_size; ++i){ //every row
         for (int j=0; j < board_size-1; ++j) //every column but the last
             cout << " " << convertToPiece(cells[j][i]) << " |";
@@ -67,13 +71,66 @@ string Board::convertToPiece(int cell){
     }
 }
 
+int Board::validateMove(int x, int y){
+    if(cells[x-1][y-1] != 0)
+        return 0;
+    return 1;
+}
+
+Board::insertMove(int player, int x, int y){
+    cells[x-1][y-1] = player;
+}
+
+bool Board::win(){
+    //Checks for any vertical win states
+    for(int i=0; i < board_size; ++i){
+        for(int j=1; i < board_size; ++j){
+            if(cells[i][j] != cells[i][j-1]){
+                break;
+            }else if(j == board_size-1){
+                return true;
+            }
+        }
+    }
+    
+    //checks for horizontal win states
+    for(int i=0; i < board_size; ++i){
+        for(int j=1; i < board_size; ++j){
+            if(cells[j][i] != cells[i][j-1]){
+                break;
+            }else if(j == board_size-1){
+                return true;
+            }
+        }
+    }
+    
+    //checks for diagonal win states
+    for(int i=1; i < board_size; ++i){
+        if(cells[i][i] != cells[i-1][i-1]){
+            break;
+        }else if(i == board_size-1){
+            return true;
+        }
+    }
+    
+    //checks for diagonal win states
+    for(int i=1, j = board_size-2; i < board_size; ++i, --j){
+        if(cells[i][j] != cells[i-1][j-1]){
+            break;
+        }else if(i == board_size-1){
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 class Player{    
     public:
         int team;
         std::string piece;
         Player(std::string);
         std::string convertToPiece();
-        
     private:
 };
 
@@ -113,22 +170,39 @@ string Player::convertToPiece(){
     }
 }
 
+int gameLoop(Board current_game, Player human, Player ai){
+    bool win = false;
+    int winner = 0;
+    
+    while(!current_game.win()){
+        current_game.print();
+        
+    }
+    cout << endl << winner << " won.";
+    return winner;
+}
 
 int main(){
   int board_size = 3;
   string player = "X";
-  
-  cout << "Pick the size of the grid (default = 3): ";
-  cin >> board_size;
-  Board board(board_size);
-  board.print();
-  cout << "X or O (X moves first): ";
-  cin >> player;
-  player = toupper(player[0]);
-  Player human(player);
-  cout << "You are " << human.convertToPiece();
-  AI ai(human.piece);
-  cout << endl << "AI is " << ai.piece; 
+  string exit = "Y";
+  while(exit == "Y"){
+      cout << "Pick the size of the grid (default = 3): ";
+      cin >> board_size;
+      Board board(board_size); //initialize a new board
+      board.print();
+      cout << "X or O (X moves first): ";
+      cin >> player;
+      player = toupper(player[0]);
+      Player human(player); //initializes human player to their piece
+      cout << "You are " << human.convertToPiece();
+      AI ai(human.piece); //initializes ai player to opposite piece
+      cout << endl << "AI is " << ai.piece; 
+      gameLoop(board, human, ai); //game logic within the game is done here
+      cout << endl << endl << "Would you like to play again? (Y/N): ";
+      cin >> exit;
+      exit = toupper(exit[0]);
+  }
   
   return 0;
 }
