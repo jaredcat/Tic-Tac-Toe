@@ -85,7 +85,7 @@ bool Board::win(){
     //Checks for any vertical win states
     for(int i=0; i < board_size; ++i){
         for(int j=1; i < board_size; ++j){
-            if(cells[i][j] != cells[i][j-1]){
+            if(cells[i][j-1] == 0 || cells[i][j] != cells[i][j-1]){
                 break;
             }else if(j == board_size-1){
                 return true;
@@ -96,7 +96,7 @@ bool Board::win(){
     //checks for horizontal win states
     for(int i=0; i < board_size; ++i){
         for(int j=1; i < board_size; ++j){
-            if(cells[j][i] != cells[i][j-1]){
+            if(cells[j][i-1] == 0 || cells[j][i] != cells[j][i-1]){
                 break;
             }else if(j == board_size-1){
                 return true;
@@ -106,7 +106,7 @@ bool Board::win(){
     
     //checks for diagonal win states
     for(int i=1; i < board_size; ++i){
-        if(cells[i][i] != cells[i-1][i-1]){
+        if(cells[i-1][i-1] == 0 || cells[i][i] != cells[i-1][i-1]){
             break;
         }else if(i == board_size-1){
             return true;
@@ -115,14 +115,14 @@ bool Board::win(){
     
     //checks for diagonal win states
     for(int i=1, j = board_size-2; i < board_size; ++i, --j){
-        if(cells[i][j] != cells[i-1][j-1]){
+        if(cells[i-1][j-1] == 0 || cells[i][j] != cells[i-1][j-1]){
             break;
         }else if(i == board_size-1){
             return true;
         }
     }
     
-    return false;
+    return true;
 }
 
 class Player{    
@@ -185,24 +185,24 @@ int gameLoop(Board current_game, Player human, Player ai){
 int main(){
   int board_size = 3;
   string player = "X";
-  string exit = "Y";
-  while(exit == "Y"){
+  string keep_playing = "Y";
+  int winner = 0, score_x = 0, score_y = 0;
+  //while(keep_playing == "Y"){
       cout << "Pick the size of the grid (default = 3): ";
       cin >> board_size;
       Board board(board_size); //initialize a new board
       board.print();
-      cout << "X or O (X moves first): ";
+      cout << endl << "X or O (X moves first): ";
       cin >> player;
       player = toupper(player[0]);
       Player human(player); //initializes human player to their piece
       cout << "You are " << human.convertToPiece();
       AI ai(human.piece); //initializes ai player to opposite piece
       cout << endl << "AI is " << ai.piece; 
-      gameLoop(board, human, ai); //game logic within the game is done here
+      winner = gameLoop(board, human, ai); //game logic within the game is done here
       cout << endl << endl << "Would you like to play again? (Y/N): ";
-      cin >> exit;
-      exit = toupper(exit[0]);
-  }
+
+   // }
   
   return 0;
 }
