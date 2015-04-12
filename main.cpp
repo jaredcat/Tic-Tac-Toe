@@ -56,7 +56,11 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
         }
     }
     current_game.print();
-    cout << endl << winner << " won.";
+    if(player1.team == winner){
+        cout << endl  << "Player 1 won.";
+    }else{
+        cout << endl << "Player 2 won.";
+    }
 }
 
 string oppositePiece(string piece){
