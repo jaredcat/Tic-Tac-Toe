@@ -1,40 +1,40 @@
 #include "board.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 Board::Board(int size){
     
-    board_size = size; //stores the board size in the object
-    //allocate memory for new board of <size> by <size>
-    cells = new int* [size];
-    for(int i=0; i<size; ++i)
-        cells[i] = new int [size];
+    //stores the board size in the object
+    board_size = size; 
+    
+    //allocate memory for new board of that is a square of the input size
+    cells = new int[(size*size)];    
     
     // Initialize the game cells to 0 (no moves)
-    for(int i =0; i<size; ++i){
-        for(int j=0; j < size; ++j){
-            cells[j][i] = 0;
-        }
+    for(int i =0; i<size*size; ++i){
+        cells[i] = 0;
     }
 }
 
 Board::~Board(){
-    for(int i=0; i < board_size; ++i){
-        delete[] cells[i];
-    }
     delete[] cells;
     //cout << endl << "Array deleted";
 }
 
 void Board::print(){
     cout << endl << endl;
-    for (int i=0; i < board_size; ++i){ //every row
-        for (int j=0; j < board_size-1; ++j) //every column but the last
-            cout << " " << convertToPiece(cells[j][i]) << " |";
-        cout << " " << convertToPiece(cells[board_size-1][i]); //last column
-        cout << endl;
-        if(i != board_size-1){ //last row doesn't need horizontal break lines
-            for (int j=1; j < board_size; ++j)
+    //for every cell
+    for(int i=0; i < board_size*board_size; ++i){
+        //for every cell in a row, but the last
+        for(int j=1; j < board_size; ++j, ++i)
+            cout << " " << convertToPiece(cells[i]) << " |";
+        //print out last row
+        cout << " " << convertToPiece(cells[i]) << " " << endl;
+        //if not the bottom row
+        if(i < (board_size*(board_size-1))){
+            //print a horizontal spacer for every cell
+            for(int j=1; j < board_size; ++j)
                 cout << "----";
             cout << "---" << endl;
         }
@@ -55,95 +55,73 @@ string Board::convertToPiece(int cell){
     }
 }
 
-int Board::validateMove(int move){
-    int count = 0;
-    int i, j;
-    for (i=0; i < board_size; ++i){ //every row
-        for (j=0; j < board_size; ++j){ //every column
-            if(cells[j][i] == 0){
-                ++count;
-                if(count == move)
-                    break;
-            }
+void Board::printMoves(){
+    for (int i=0; i < board_size*board_size; ++i){
+        if(cells[i] == 0){
+            cout << endl << "Cell: " << i+1;
         }
-        if(count == move)
-            break;
     }
-    if(cells[j][i] == 0)
-        return 1;
-    return 0;
-    
+}
+
+vector<int> Board::getMoves(){
+    vector<int> moves;
+    //for every cell
+    for (int i=0; i < board_size*board_size; ++i){
+        if(cells[i] == 0){
+            cout << endl << "Cell: " << i+1;
+            moves.push_back(i);
+        }
+    }
+    return moves;
+}
+
+bool Board::validateMove(int move){
+    if(move > 0 || move <= board_size*board_size){
+        if(cells[move-1] == 0)
+            return true;
+    }
+    return false;
 }
 
 void Board::insertMove(int player, int move){
-    int count = 0;
-    int i, j;
-    for (i=0; i < board_size; ++i){ //every row
-        for (j=0; j < board_size; ++j){ //every column
-            if(cells[j][i] == 0){
-                ++count;
-                if(count == move)
-                    break;
-            }
-        }
-        if(count == move)
-            break;
-    }
-    cells[j][i] = player;
+    
+    cells[move-1] = player;
 }
 
-int Board::win(){
+bool Board::win(){
+    //checks for horizontal win states
+    for(int i=0; i <= board_size*(board_size-1); i+=board_size){
+        for(int j=1; j < board_size; ++j){
+            //cout << endl << j+i-1 << "=" << cells[i+j-1] << " vs " << i+j << "=" << cells[i+j]; 
+            if(cells[i+j-1] == 0 || cells[i+j-1] != cells[i+j]){
+                break;
+            }else if(j == board_size-1){
+                return true;
+            }
+        }
+    }
+    
     //Checks for any vertical win states
     for(int i=0; i < board_size; ++i){
-        for(int j=1; i < board_size; ++j){
-            if(cells[i][j-1] == 0 || cells[i][j] != cells[i][j-1]){
+        for(int j=i+board_size; j < board_size*board_size; j+=board_size){
+            //cout << endl << j-board_size << "=" << cells[j-board_size] << " vs " << j << "=" << cells[j]; 
+            if(cells[j-board_size] == 0 || cells[j-board_size] != cells[j]){
                 break;
-            }else if(j == board_size-1){
-                return cells[i][j];
-            }
-        }
-    }
-    
-    //checks for horizontal win states
-    for(int i=0; i < board_size; ++i){
-        for(int j=1; i < board_size; ++j){
-            if(cells[j][i-1] == 0 || cells[j][i] != cells[j][i-1]){
-                break;
-            }else if(j == board_size-1){
-                return cells[i][j];
+            }else if(j >= board_size*(board_size-1)){
+                return true;
             }
         }
     }
     
     //checks for diagonal win states
-    for(int i=1; i < board_size; ++i){
-        if(cells[i-1][i-1] == 0 || cells[i][i] != cells[i-1][i-1]){
+    for(int i=board_size*2-2; i < board_size*board_size; i+=board_size-1){
+        //cout << endl << i-board_size+1 << "=" << cells[i-board_size+1] << " vs " << i << "=" << cells[i]; 
+        if(cells[i-board_size+1] == 0 || cells[i-board_size+1] != cells[i]){
             break;
-        }else if(i == board_size-1){
-            return cells[i][i];
-        }
-    }
-    
-    //checks for diagonal win states
-    for(int i=1, j = board_size-2; i < board_size; ++i, --j){
-        if(cells[i-1][j+1] == 0 || cells[i][j] != cells[i-1][j+1]){
-            break;
-        }else if(i == board_size-1){
-            return cells[i][j];
+        }else if(i == board_size*(board_size-1)){
+            return true;
         }
     }
 
-    return 0;
-}
-
-void Board::getMoves(){
-    int count = 1;
-    for (int i=0; i < board_size; ++i){ //every column
-        for (int j=0; j < board_size; ++j){ //every row
-            if(cells[j][i] == 0){
-                cout << endl << count << ". (" << j << "," << i << ")";
-                ++count;
-            }
-        }
-    }
+    return false;
 }

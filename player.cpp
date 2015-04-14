@@ -28,3 +28,28 @@ string Player::convertToPiece(){
     }
     return "";
 }
+
+int AI::getAIMove(Board &current_game){
+    int difficulty = 10;
+    minimax(current_game, difficulty);
+
+    return 0;
+}
+
+int AI::minimax(Board &current_game, int level, long alpha, long beta){
+    //int minmax[3];
+    
+    if (this->piece == "X"){
+        //If Max
+    }else{
+        //Else Min
+    }
+    
+    return 0;
+}
+
+int AI::evaluate(Board &curent_game){
+
+    
+    return 0;
+}

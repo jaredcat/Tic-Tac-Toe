@@ -1,20 +1,22 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include <iostream>
+#include <vector>
 
 class Board{    
     public:
-        int **cells;
+        int board_size;
+        int *cells;
         Board(int size = 3);
         ~Board();
         void print();
-        int validateMove(int move);
+        bool validateMove(int move);
         void insertMove(int player, int move);
-        int win();
-        void getMoves();
+        bool win();
+        void printMoves();
+        std::vector<int> getMoves();
         
     private:
-        int board_size;
         std::string convertToPiece(int);
 };
 

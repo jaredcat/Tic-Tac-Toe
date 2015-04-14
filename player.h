@@ -1,5 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include "board.h"
 #include <iostream>
 #include <string>
 
@@ -18,5 +19,10 @@ class AI : public Player{
         AI(std::string piece) : Player(piece){
             this->ishuman = 0;
         };
+        int getAIMove(Board &curent_game);
+    
+    private:
+        int minimax(Board &curent_game, int level = 10, long alpha = -2000000000, long beta = 2000000000);
+        int evaluate(Board &curent_game);
 };
 #endif
