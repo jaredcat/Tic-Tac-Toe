@@ -68,7 +68,6 @@ vector<int> Board::getMoves(){
     //for every cell
     for (int i=0; i < board_size*board_size; ++i){
         if(cells[i] == 0){
-            cout << endl << "Cell: " << i+1;
             moves.push_back(i);
         }
     }

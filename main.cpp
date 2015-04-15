@@ -25,35 +25,80 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
                 winner = 1;
                 break;
             }
-            if(player2.ishuman){
-                while(!current_game.validateMove(move)){
-                    current_game.print();
-                    current_game.printMoves();
-                    cout << endl << "Player 2: Select cell: ";
-                    cin >> move;
-                }
-                current_game.insertMove(player2.team, move);
-                move = -1;
-            }else{
-                //current_game.insertMove(player2.team, player2.getAIMove(current_game));
+            while(!current_game.validateMove(move)){
+                current_game.print();
+                current_game.printMoves();
+                cout << endl << "Player 2: Select cell: ";
+                cin >> move;
             }
+            current_game.insertMove(player2.team, move);
+            move = -1;
             if(current_game.win()){
                 winner = 2;
                 break;
             }
         }else{
-            if(player2.ishuman){
-                while(!current_game.validateMove(move)){
-                    current_game.print();
-                    current_game.printMoves();
-                    cout << endl << "Player 2: Select cell: ";
-                    cin >> move;
-                }
-                current_game.insertMove(player2.team, move);
-                move = -1;
-            }else{
-                //current_game.insertMove(player1.team, player1.getAIMove(current_game));
+            while(!current_game.validateMove(move)){
+                current_game.print();
+                current_game.printMoves();
+                cout << endl << "Player 2: Select cell: ";
+                cin >> move;
             }
+            current_game.insertMove(player2.team, move);
+            move = -1;
+            if(current_game.win()){
+                winner = 2;
+                break;
+            }
+            while(!current_game.validateMove(move)){
+                current_game.print();
+                current_game.printMoves();
+                cout << endl << "Player 1: Select cell: ";
+                cin >> move;
+            }
+            current_game.insertMove(player1.team, move);
+            move = -1;
+            if(current_game.win()){
+                winner = 1;
+                break;
+            }
+        }
+    }
+    current_game.print();
+    if(player1.team == winner){
+        cout << endl  << "Player 1 won.";
+    }else{
+        cout << endl << "Player 2 won.";
+    }
+}
+
+void gameLoop(Board &current_game, Player &player1, AI &player2){
+        int winner = 0;
+    int move=-1;
+    
+    while(!current_game.win()){
+        if(player1.piece == "X"){
+            while(!current_game.validateMove(move)){
+                current_game.print();
+                current_game.printMoves();
+                cout << endl << "Player 1: Select cell: ";
+                cin >> move;
+            }
+            current_game.insertMove(player1.team, move);
+            move = -1;
+            if(current_game.win()){
+                winner = 1;
+                break;
+            }
+            current_game.insertMove(player2.team, player2.getAIMove(current_game));
+            move = -1;
+            if(current_game.win()){
+                winner = 2;
+                break;
+            }
+        }else{
+            current_game.insertMove(player2.team, player2.getAIMove(current_game));
+            move = -1;
             if(current_game.win()){
                 winner = 2;
                 break;
