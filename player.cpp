@@ -1,18 +1,15 @@
 #include "player.h"
 #include <iostream>
 #include <string>
+#include <array>
 using namespace std;
 
 Player::Player(string piece){
-    if(piece == "X"){
-        team = 1;
-        this->piece = piece;
-    }else if(piece == "O"){
-        team = 2;
-        this->piece = piece;
-    }else{
-        team = 1;
-        this->piece = piece;
+    team = 1;
+    this->piece = "X";
+    if(piece == "O"){
+        team = -1;
+        this->piece = "O";
     }
 }
 
@@ -22,56 +19,53 @@ string Player::convertToPiece(){
         case(1):
             return "X";
             break;
-        case(2):
+        case(-1):
             return "O";
             break;
     }
     return "";
 }
 
-int AI::getAIMove(Board &current_game){
+int* AI::getAIMove(int team, Board &current_game){
     int difficulty = 10;
     bool max = true;
-    if(this->piece == "O")
+    if(team == -1)
         max = false;
-        
-    int move = minimax(current_game, max, difficulty)[1];
+    int *move = (int*)minimax(current_game, max, difficulty);
 
-    return move;
+    return new int[2] {move[1],move[2]};
 }
 
-int* AI::minimax(Board &current_game, bool max, int depth, int alpha, int beta){
-    vector<int> move = current_game.getMoves();
-    int score;
-    int bestMove = -1;
+long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long beta){
+    vector<array<int,2>> move = current_game.getMoves();
+    long score;
+    long bestCol = -1;
+    long bestRow = -1;
     
-    if(depth == 0){
-        score = evaluate(current_game);
-        return new int[2] {score, bestMove};
+    if(move.size() == 0 || depth == 0){
+        score = current_game.evaluate(this->team);
+        return new long[3] {score, bestCol, bestRow};
     }else{
-        for(int i=0; move.size(); ++i){
-            current_game.cells[move[i]] = this->team;
+        for(uint i=0; i < move.size(); ++i){
+            current_game.cells[move[i][0]][move[i][1]] = this->team;
             if(max){
                 score = minimax(current_game, false, depth-1, alpha, beta)[0];
                 if(score > alpha){
                     alpha = score;
-                    bestMove = move[i];
+                    bestCol = move[i][0];
+                    bestRow = move[i][1];
                 }
             }else{
                 score = minimax(current_game, true, depth-1, alpha, beta)[0];
                 if(score < beta){
                     beta = score;
-                    bestMove = move[i];
+                    bestCol = move[i][0];
+                    bestRow = move[i][1];
                 }
             }
-            current_game.cells[move[i]] = 0;
+            current_game.cells[move[i][0]][move[i][1]] = 0;
             if(alpha >= beta) break;
         }
-        return new int[2] {(max) ? alpha : beta, bestMove};       
+        return new long[3] {(max) ? alpha : beta, bestCol, bestRow};       
     }
-}
-
-int AI::evaluate(Board &current_game){
-    
-    return 0;
 }

@@ -2,19 +2,21 @@
 #define BOARD_H
 #include <iostream>
 #include <vector>
+#include <array>
 
 class Board{    
     public:
         int board_size;
-        int *cells;
+        int **cells;
         Board(int size = 3);
         ~Board();
         void print();
-        bool validateMove(int move);
-        void insertMove(int player, int move);
+        int* validateMove(int move);
+        void insertMove(int player, int col, int row);
         bool win();
+        long evaluate(int team);
         void printMoves();
-        std::vector<int> getMoves();
+        std::vector<std::array<int,2>> getMoves();
         
     private:
         std::string convertToPiece(int);

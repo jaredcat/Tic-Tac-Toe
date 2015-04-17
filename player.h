@@ -3,6 +3,7 @@
 #include "board.h"
 #include <iostream>
 #include <string>
+#include <array>
 
 class Player{    
     public:
@@ -17,10 +18,9 @@ class AI : public Player{
     public:
         AI(std::string piece) : Player(piece){
         };
-        int getAIMove(Board &curent_game);
+        int* getAIMove(int team, Board &curent_game);
     
     private:
-        int* minimax(Board &curent_game, bool max, int level = 10, int alpha = -32000, int beta = 32000);
-        int evaluate(Board &curent_game);
+        long* minimax(Board &curent_game, bool max, int level = 10, long alpha = -2000000000, long beta = 2000000000);
 };
 #endif
