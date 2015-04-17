@@ -31,7 +31,7 @@ Board::~Board(){
 }
 
 void Board::print(){
-    cout << endl << endl;
+    cout << endl;
     //for every cell
     cout << endl << endl;
     for (int row=0; row < board_size; ++row){ //every row
