@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <string>
 using namespace std;
 
 Board::Board(int size){
@@ -31,12 +32,12 @@ Board::~Board(){
 }
 
 void Board::print(){
-    cout << endl;
     //for every cell
-    cout << endl << endl;
+    cout << endl;
     for (int row=0; row < board_size; ++row){ //every row
-        for (int col=0; col < board_size-1; ++col) //every column but the last
-            cout << " " << convertToPiece(cells[col][row]) << " |";
+		for (int col = 0; col < board_size - 1; ++col){ //every column but the last
+			cout << " " << convertToPiece(cells[col][row]) << " |";
+		}
         cout << " " << convertToPiece(cells[board_size-1][row]); //last column
         cout << endl;
         if(row != board_size-1){ //last row doesn't need horizontal break lines
@@ -151,107 +152,133 @@ bool Board::win(){
         }
     }
 
+	//checks for tie
+	int no_tie = false;
+	for (int row = 0; row < board_size; ++row){
+		for (int col = 0; col < board_size; ++col){
+			if (cells[col][row] == 0){
+				no_tie = true;
+			}
+			if (no_tie)
+				break;
+		}
+		if (no_tie)
+			break;
+	}
+	if (!no_tie)
+		return true;
+
     return false;
 }
 
-long Board::evaluate(int team){
-    long score = 0;
-    long temp_score = 0;
-    
-    //evaluates rows
-    for(int row=0; row < board_size; ++row){
-        for(int col=0; col < board_size; col++){
-            if(cells[col][row] == team){
-                temp_score = 1;
-            }else if (cells[col][row] == team*-1){
-                temp_score = -1;
-            }else{
-                temp_score = 0;
-            }
-            if(cells[col][row] != 0 && !(col+1 >= board_size)){
-                for(int i=col+1; i < board_size; ++i, ++col){
-                    if(cells[i-1][row] == cells[i][row]){
-                        temp_score *= 10;
-                    }else{
-                        col = i;
-                        break;
-                    }
-                }
-            }
-            score += temp_score;
-            //cout << endl << col << ", " << row << " = " << cells[col][row];
-            //cout << endl << "xxx " << temp_score <<" xxx" << endl;
-        }
-    }
-    
-    //evaluates columns
-    for(int col=0; col < board_size; ++col){
-        for(int row=0; row < board_size; ++row){
-            if(cells[col][row] == team){
-                temp_score = 1;
-            }else if(cells[col][row] == -1*team){
-                temp_score = -1;
-            }else{
-                temp_score = 0;
-            }
-            if(cells[col][row] != 0 && !(row+1 >= board_size)){
-                for(int i=row+1; i < board_size; ++i, ++row){
-                    if(cells[col][i-1] == cells[col][i]){
-                        temp_score *= 10;
-                    }else{
-                        row = i;
-                        break;
-                    }
-                }
-            }
-            score += temp_score;
-        }
-    }
-    
-    //evaluates '\'
-    for(int both = 0; both < board_size; ++both){
-        if(cells[both][both] == team){
-            temp_score = 1;
-        }else if(cells[both][both] == -1*team){
-            temp_score = -1;
-        }else{
-            temp_score = 0;
-        }
-        if(cells[both][both] != 0 && !(both+1 >= board_size)){
-            for(int i=both+1; i <board_size; ++i, ++both){
-                if(cells[i-1][i-1] == cells[i][i]){
-                    temp_score *= 10;
-                }else{
-                    both = i;
-                    break;
-                }
-            }
-        }
-        score += temp_score;
-    }
-    
-    //evaluates '/'
-    for(int col=0, row = board_size-1; col < board_size; ++col, --row){
-        if(cells[col][row] == team){
-            temp_score = 1;
-        }else if(cells[col][row] == -1*team){
-            temp_score = -1;
-        }else{
-            temp_score = 0;
-        }
-        if(cells[col][row] != 0 && !(col+1 >= board_size)){
-            for(int i=col+1, j=row-1; i < board_size; ++i, ++col, --j, --row){
-                if(cells[i-1][j+1] == cells[i][j]){
-                    temp_score *= 10;
-                }else{
-                    col = i;
-                    row = j;
-                    break;
-                }
-            }
-        }
-        score += temp_score;
-    }
-    
-    return score;
+long Board::evaluate(){
+	long score = 0;
+	long temp_score = 0;
+
+	//evaluates rows
+	for (int row = 0; row < board_size; ++row){
+		for (int col = 0; col < board_size; col++){
+			if (cells[col][row] == 1){
+				temp_score = 1;
+			}
+			else if (cells[col][row] == -1){
+				temp_score = -1;
+			}
+			else{
+				temp_score = 0;
+			}
+			if (cells[col][row] != 0 && !(col + 1 >= board_size)){
+				for (int i = col + 1; i < board_size; ++i, ++col){
+					if (cells[i - 1][row] == cells[i][row]){
+						temp_score *= 10;
+					}
+					else{
+						col = i;
+						break;
+					}
+				}
+			}
+			score += temp_score;
+		}
+	}
+
+	//evaluates columns
+	for (int col = 0; col < board_size; ++col){
+		for (int row = 0; row < board_size; ++row){
+			if (cells[col][row] == 1){
+				temp_score = 1;
+			}
+			else if (cells[col][row] == -1){
+				temp_score = -1;
+			}
+			else{
+				temp_score = 0;
+			}
+			if (cells[col][row] != 0 && !(row + 1 >= board_size)){
+				for (int i = row + 1; i < board_size; ++i, ++row){
+					if (cells[col][i - 1] == cells[col][i]){
+						temp_score *= 10;
+					}
+					else{
+						row = i;
+						break;
+					}
+				}
+			}
+			score += temp_score;
+		}
+	}
+
+	//evaluates '\'
+	for (int both = 0; both < board_size; ++both){
+		if (cells[both][both] == 1){
+			temp_score = 1;
+		}
+		else if (cells[both][both] == -1){
+			temp_score = -1;
+		}
+		else{
+			temp_score = 0;
+		}
+		if (cells[both][both] != 0 && !(both + 1 >= board_size)){
+			for (int i = both + 1; i <board_size; ++i, ++both){
+				if (cells[i - 1][i - 1] == cells[i][i]){
+					temp_score *= 10;
+				}
+				else{
+					both = i;
+					break;
+				}
+			}
+		}
+		score += temp_score;
+	}
+
+	//evaluates '/'
+	for (int col = 0, row = board_size - 1; col < board_size; ++col, --row){
+		if (cells[col][row] == 1){
+			temp_score = 1;
+		}
+		else if (cells[col][row] == -1){
+			temp_score = -1;
+		}
+		else{
+			temp_score = 0;
+		}
+		if (cells[col][row] != 0 && !(col + 1 >= board_size)){
+			for (int i = col + 1, j = row - 1; i < board_size; ++i, ++col, --j, --row){
+				if (cells[i - 1][j + 1] == cells[i][j]){
+					temp_score *= 10;
+				}
+				else{
+					col = i;
+					row = j;
+					break;
+				}
+			}
+		}
+		score += temp_score;
+	}
+
+	return score;
 }

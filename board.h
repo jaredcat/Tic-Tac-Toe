@@ -15,7 +15,7 @@ class Board{
         int* validateMove(int move);
         void insertMove(int player, int col, int row);
         bool win();
-        long evaluate(int team);
+        long evaluate();
         void printMoves();
         std::vector<std::array<int,2>> getMoves();
         

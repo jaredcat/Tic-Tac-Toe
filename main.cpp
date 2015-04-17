@@ -23,7 +23,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
         current_game.insertMove(player1.team, valid[0], valid[1]);
     }
     
-    while(!current_game.win()){
+    do{
         do{
             current_game.print();
             current_game.printMoves();
@@ -49,7 +49,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
             winner = player1.team;
             break;
         }
-    }
+	}while (!current_game.win());
     current_game.print();
     if(player1.team == winner){
         cout << endl  << "Player 1 won.";
@@ -75,7 +75,7 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
         current_game.insertMove(human.team, valid[0], valid[1]);
     }
     
-    while(!current_game.win()){
+    do{
         //let AI player make its move
         aimove = ai.getAIMove(ai.team, current_game);
         current_game.insertMove(ai.team, aimove[0], aimove[1]);
@@ -97,7 +97,7 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
             winner = human.team;
             break;
         }
-    }
+	}while (!current_game.win());
     current_game.print();
     if(human.team == winner){
         cout << endl  << "Human won.";
@@ -116,6 +116,7 @@ string oppositePiece(string piece){
 int main(){
   int board_size = 3;
   int humans = 1;
+  int difficulty = 5;
   string player = "X";
   cout << "Pick the size of the grid (default = 3): ";
   cin >> board_size;
@@ -129,7 +130,9 @@ int main(){
       player = toupper(player[0]);
       Player human(player); //initializes human player to their piece
       cout << "You are " << human.convertToPiece();
-      AI ai(oppositePiece(human.piece)); //initializes ai player to opposite piece
+      cout << endl << "Select \"difficulty\" (depth, default = 5) : ";
+      cin >> difficulty;
+      AI ai(oppositePiece(human.piece), difficulty); //initializes ai player to opposite piece
       cout << endl << "AI is " << ai.piece; 
       gameLoop(board, human, ai); //game logic within the game is done here
   }else if(humans == 2){
@@ -142,5 +145,6 @@ int main(){
       cout << endl << "Player 2 is: " << human2.piece; 
       gameLoop(board, human1, human2); //game logic within the game is done here   
   }
+  system("pause");
   return 0;
 }
