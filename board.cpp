@@ -160,23 +160,27 @@ long Board::evaluate(int team){
     
     //evaluates rows
     for(int row=0; row < board_size; ++row){
-        for(int col=0; col < board_size; ++col){
+        for(int col=0; col < board_size; col++){
             if(cells[col][row] == team){
                 temp_score = 1;
-            }else if (cells[col][row] == -1*team){
+            }else if (cells[col][row] == team*-1){
                 temp_score = -1;
+            }else{
+                temp_score = 0;
             }
-            if(cells[col][row] != 0){
-                for(int i=col+1; i < board_size; ++i){
+            if(cells[col][row] != 0 && !(col+1 >= board_size)){
+                for(int i=col+1; i < board_size; ++i, ++col){
                     if(cells[i-1][row] == cells[i][row]){
                         temp_score *= 10;
                     }else{
-                        col = i-1;
+                        col = i;
                         break;
                     }
                 }
-                score += temp_score;
             }
+            score += temp_score;
+            //cout << endl << col << ", " << row << " = " << cells[col][row];
+            //cout << endl << "xxx " << temp_score <<" xxx" << endl;
         }
     }
     
@@ -187,18 +191,20 @@ long Board::evaluate(int team){
                 temp_score = 1;
             }else if(cells[col][row] == -1*team){
                 temp_score = -1;
+            }else{
+                temp_score = 0;
             }
-            if(cells[col][row] != 0){
-                for(int i=row+1; i < board_size; ++i){
+            if(cells[col][row] != 0 && !(row+1 >= board_size)){
+                for(int i=row+1; i < board_size; ++i, ++row){
                     if(cells[col][i-1] == cells[col][i]){
                         temp_score *= 10;
                     }else{
-                        row = i-1;
+                        row = i;
                         break;
                     }
                 }
-                score += temp_score;
             }
+            score += temp_score;
         }
     }
     
@@ -208,18 +214,20 @@ long Board::evaluate(int team){
             temp_score = 1;
         }else if(cells[both][both] == -1*team){
             temp_score = -1;
+        }else{
+            temp_score = 0;
         }
-        if(cells[both][both] != 0){
-            for(int i=both+1; i <board_size; ++i){
+        if(cells[both][both] != 0 && !(both+1 >= board_size)){
+            for(int i=both+1; i <board_size; ++i, ++both){
                 if(cells[i-1][i-1] == cells[i][i]){
                     temp_score *= 10;
                 }else{
-                    both = i-1;
+                    both = i;
                     break;
                 }
             }
-            score += temp_score;
         }
+        score += temp_score;
     }
     
     //evaluates '/'
@@ -228,19 +236,21 @@ long Board::evaluate(int team){
             temp_score = 1;
         }else if(cells[col][row] == -1*team){
             temp_score = -1;
+        }else{
+            temp_score = 0;
         }
-        if(cells[col][row] != 0){
-            for(int i=col+1, j=row-1; i < board_size; ++i, --j){
+        if(cells[col][row] != 0 && !(col+1 >= board_size)){
+            for(int i=col+1, j=row-1; i < board_size; ++i, ++col, --j, --row){
                 if(cells[i-1][j+1] == cells[i][j]){
                     temp_score *= 10;
                 }else{
-                    col = i-1;
-                    row = j+1;
+                    col = i;
+                    row = j;
                     break;
                 }
             }
-            score += temp_score;
         }
+        score += temp_score;
     }
     
     return score;

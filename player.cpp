@@ -38,16 +38,17 @@ int* AI::getAIMove(int team, Board &current_game){
 
 long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long beta){
     vector<array<int,2>> move = current_game.getMoves();
-    long score;
+    long score = 0;
     long bestCol = -1;
     long bestRow = -1;
+    int current_team = (max) ? 1 : -1;
     
-    if(move.size() == 0 || depth == 0){
+    if(move.size() == 0 || depth == 0 || current_game.win()){
         score = current_game.evaluate(this->team);
         return new long[3] {score, bestCol, bestRow};
     }else{
         for(uint i=0; i < move.size(); ++i){
-            current_game.cells[move[i][0]][move[i][1]] = this->team;
+            current_game.cells[move[i][0]][move[i][1]] = current_team;            
             if(max){
                 score = minimax(current_game, false, depth-1, alpha, beta)[0];
                 if(score > alpha){
@@ -68,4 +69,5 @@ long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long bet
         }
         return new long[3] {(max) ? alpha : beta, bestCol, bestRow};       
     }
+    return new long[3]{0,0,0};
 }

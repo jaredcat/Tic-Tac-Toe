@@ -8,6 +8,7 @@ class Board{
     public:
         int board_size;
         int **cells;
+        
         Board(int size = 3);
         ~Board();
         void print();

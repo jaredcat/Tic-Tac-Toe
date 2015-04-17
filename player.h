@@ -8,6 +8,7 @@
 class Player{    
     public:
         int team;
+        
         std::string piece;
         Player(std::string);
         std::string convertToPiece();
@@ -21,6 +22,6 @@ class AI : public Player{
         int* getAIMove(int team, Board &curent_game);
     
     private:
-        long* minimax(Board &curent_game, bool max, int level = 10, long alpha = -2000000000, long beta = 2000000000);
+        long* minimax(Board &curent_game, bool max, int level = 2, long alpha = -2000000000, long beta = 2000000000);
 };
 #endif
