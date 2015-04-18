@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <cstdio>
+#include <ctime>
 using namespace std;
 
 Player::Player(string piece){
@@ -30,9 +32,12 @@ array<int,2> AI::getAIMove(int team, Board &current_game){
 	bool max = true;
     if(team == -1)
         max = false;
+    double duration;
+    clock_t start = clock();
     array<long,4>move = minimax(current_game, max, this->difficulty);
-    cout << endl << "Score: " << move[0] << "  col: " << move[1] << " row: " << move[2];
-	cout << endl << endl << "Moves considered: " << move[3];
+    duration = (clock() - start) / (double)CLOCKS_PER_SEC;
+	cout << endl << endl << "Possible states considered: " << move[3];
+    cout << endl << "Time: " << duration << "s";
     return array<int,2>{{(int)move[1],(int)move[2]}};
 }
 

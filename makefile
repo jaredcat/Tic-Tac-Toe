@@ -1,6 +1,6 @@
 CC = g++
 FILES = main.cpp player.cpp board.cpp
-OUT_EXE = game
+OUT_EXE = minimaxai
 
 build: $(FILES)
 	$(CC) -std=c++11 $(FILES) -o $(OUT_EXE)
