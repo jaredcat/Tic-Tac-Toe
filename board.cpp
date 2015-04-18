@@ -4,9 +4,7 @@
 #include <array>
 #include <string>
 #include <stdio.h>
-using namespace std;
-
-#define CSI 0x1b
+using namespace std; 
 
 Board::Board(int size){
     
@@ -50,7 +48,6 @@ void Board::print(){
             }else{
                 cout << " ";
                 convertToPiece(cells[col][row]);
-                printf("%c[%dm%s",CSI,37,"");
             }
             if(col != board_size-1){
                 if(count < 10 || cells[col][row] != 0){
@@ -74,10 +71,12 @@ void Board::print(){
 void Board::convertToPiece(int cell){
     switch(cell){
         case(1):
-            printf("%c[%dm%s",CSI,32,"X");
+            printf("%c[%dm%s",0x1b,32,"X");
+            printf("%c[%dm%s",0x1b,37,"");
             break;
         case(-1):
-            printf("%c[%dm%s",CSI,31,"O");
+            printf("%c[%dm%s",0x1b,31,"O");
+            printf("%c[%dm%s",0x1b,37,"");
             break;
         default:
             cout << " ";

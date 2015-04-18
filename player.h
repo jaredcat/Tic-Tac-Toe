@@ -17,7 +17,7 @@ class Player{
 
 class AI : public Player{
     public:
-        AI(std::string piece, int difficulty = 5) : Player(piece){
+        AI(std::string piece, int difficulty = 3) : Player(piece){
 			this->difficulty = difficulty;
         };
         std::array<int,2> getAIMove(int team, Board &curent_game);
