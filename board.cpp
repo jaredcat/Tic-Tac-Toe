@@ -111,14 +111,14 @@ void Board::insertMove(int player, int col, int row){
     cells[col][row] = player;
 }
 
-bool Board::win(){
+int Board::win(){
     //checks for horizontal win states
     for(int row=0; row < board_size; ++row){
         for(int col=1; col < board_size; ++col){
             if(cells[col-1][row] == 0 || cells[col][row] != cells[col-1][row]){
                 break;
             }else if(col == board_size-1){
-                return true;
+                return cells[col][row];
             }
         }
     }
@@ -129,7 +129,7 @@ bool Board::win(){
             if(cells[col][row-1] == 0 || cells[col][row] != cells[col][row-1]){
                 break;
             }else if(row == board_size-1){
-                return true;
+                return cells[col][row];
             }
         }
     }
@@ -139,7 +139,7 @@ bool Board::win(){
         if(cells[both-1][both-1] == 0 || cells[both][both] != cells[both-1][both-1]){
             break;
         }else if(both == board_size-1){
-            return true;
+            return cells[both][both];
         }
     }
     
@@ -148,7 +148,7 @@ bool Board::win(){
         if(cells[col-1][row+1] == 0 || cells[col][row] != cells[col-1][row+1]){
             break;
         }else if(col == board_size-1){
-            return true;
+            return cells[col][row];
         }
     }
 
@@ -166,9 +166,9 @@ bool Board::win(){
 			break;
 	}
 	if (!no_tie)
-		return true;
+		return 0;
 
-    return false;
+    return 2;
 }
 
 long Board::evaluate(){

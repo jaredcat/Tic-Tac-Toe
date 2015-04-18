@@ -43,11 +43,10 @@ long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long bet
     long bestRow = -1;
     int current_team = (max) ? 1 : -1;
     
-    if(move.size() == 0 || depth == 0 || current_game.win()){
-		/*current_game.print();
-        score = current_game.evaluate();*/
-		cout << score;
-		
+    if(move.size() == 0 || depth == 0 || current_game.win() != 2){
+        score = current_game.evaluate();
+		//current_game.print();
+		//cout << score;
 		return new long[4] {score, bestCol, bestRow, count};
     }else{
 		for (unsigned int i = 0; i < move.size(); ++i){

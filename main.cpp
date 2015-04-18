@@ -32,10 +32,8 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
             valid = current_game.validateMove(move);
         }while(valid[0] == -1);
         current_game.insertMove(player2.team, valid[0], valid[1]);
-        if(current_game.win()){
-            winner = player2.team;
+        if((winner = current_game.win()) < 2)
             break;
-        }
         
         do{
             current_game.print();
@@ -45,17 +43,19 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
             valid = current_game.validateMove(move);
         }while(valid[0] == -1);
         current_game.insertMove(player1.team, valid[0], valid[1]);
-        if(current_game.win()){
-            winner = player1.team;
-            break;
-        }
-	}while (!current_game.win());
+		if ((winner = current_game.win()) < 2)
+			break;
+
+	}while (current_game.win() == 2);
     current_game.print();
+	cout << endl;
     if(player1.team == winner){
-        cout << endl  << "Player 1 won.";
-    }else{
-        cout << endl << "Player 2 won.";
-    }
+        cout << "Player 1 won.";
+    }else if(player2.team  == winner){
+        cout << "Player 2 won.";
+	}else{
+		cout << "Tie game.";
+	}
 }
 
 void gameLoop(Board &current_game, Player &human, AI &ai){
@@ -79,10 +79,8 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
         //let AI player make its move
         aimove = ai.getAIMove(ai.team, current_game);
         current_game.insertMove(ai.team, aimove[0], aimove[1]);
-        if(current_game.win()){
-            winner = ai.team;
-            break;
-        }
+		if ((winner = current_game.win()) < 2)
+			break;
         
         //let human player make its move
         do{
@@ -93,17 +91,21 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
             valid = current_game.validateMove(move);
         }while(valid[0] == -1);
         current_game.insertMove(human.team, valid[0], valid[1]);
-        if(current_game.win()){
-            winner = human.team;
-            break;
-        }
-	}while (!current_game.win());
+		if ((winner = current_game.win()) < 2)
+			break;
+
+	}while (current_game.win() == 2 );
     current_game.print();
-    if(human.team == winner){
-        cout << endl  << "Human won.";
-    }else{
-        cout << endl << "AI won.";
-    }
+	cout << endl;
+	if (human.team == winner){
+		cout << "Player 1 won.";
+	}
+	else if (ai.team == winner){
+		cout << "Player 2 won.";
+	}
+	else{
+		cout << "Tie game.";
+	}
 }
 
 string oppositePiece(string piece){
@@ -145,6 +147,7 @@ int main(){
       cout << endl << "Player 2 is: " << human2.piece; 
       gameLoop(board, human1, human2); //game logic within the game is done here   
   }
+  cout << endl;
   system("pause");
   return 0;
 }

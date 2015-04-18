@@ -14,7 +14,7 @@ class Board{
         void print();
         int* validateMove(int move);
         void insertMove(int player, int col, int row);
-        bool win();
+        int win();
         long evaluate();
         void printMoves();
         std::vector<std::array<int,2>> getMoves();
