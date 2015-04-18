@@ -2,7 +2,7 @@
 Dynamic Tic-Tac-Toe using Alpha Beta AI
 
 ##Instructions:
-1. Use make or visual studio to compile (c++11 or greater).
+1. Use make to compile or GCC (c++11 or greater).
 2. Run.
 3. Follow on screen instructions.
 
