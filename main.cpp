@@ -2,7 +2,6 @@
 #include "player.h"
 #include <iostream>
 #include <string>
-#include <stdlib.h>
 #include <vector>
 using namespace std;
 
@@ -10,7 +9,7 @@ using namespace std;
 void gameLoop(Board &current_game, Player &player1, Player &player2){
     int winner = 0;
     int move = -1;
-    int *valid;
+    array<int,2> valid;
     
     if(player1.piece == "X"){
         do{
@@ -61,7 +60,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
 void gameLoop(Board &current_game, Player &human, AI &ai){
     int winner = 0;
     int move = -1;
-    int *aimove, *valid;
+    array<int,2> aimove, valid;
     
     //if human player is X then let them move first
     if(human.piece == "X"){
@@ -76,6 +75,8 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
     }
     
     do{
+        current_game.print();
+        
         //let AI player make its move
         aimove = ai.getAIMove(ai.team, current_game);
         current_game.insertMove(ai.team, aimove[0], aimove[1]);
@@ -148,6 +149,6 @@ int main(){
       gameLoop(board, human1, human2); //game logic within the game is done here   
   }
   cout << endl;
-  system("pause");
+  //system("pause");
   return 0;
 }

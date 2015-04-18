@@ -26,17 +26,17 @@ string Player::convertToPiece(){
     return "";
 }
 
-int* AI::getAIMove(int team, Board &current_game){
+array<int,2> AI::getAIMove(int team, Board &current_game){
 	bool max = true;
     if(team == -1)
         max = false;
-    int *move = (int*)minimax(current_game, max, this->difficulty);
-
+    array<long,4>move = minimax(current_game, max, this->difficulty);
+    cout << endl << "Score: " << move[0] << "  col: " << move[1] << " row: " << move[2];
 	cout << endl << endl << "Moves considered: " << move[3];
-    return new int[2] {move[1],move[2]};
+    return array<int,2>{{(int)move[1],(int)move[2]}};
 }
 
-long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long beta, long count){
+array<long,4> AI::minimax(Board &current_game, bool max, int depth, long alpha, long beta, long count){
     vector<array<int,2>> move = current_game.getMoves();
     long score = 0;
     long bestCol = -1;
@@ -47,13 +47,13 @@ long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long bet
         score = current_game.evaluate();
 		//current_game.print();
 		//cout << score;
-		return new long[4] {score, bestCol, bestRow, count};
+		return array<long,4>{{score, bestCol, bestRow, count}};
     }else{
 		for (unsigned int i = 0; i < move.size(); ++i){
             current_game.cells[move[i][0]][move[i][1]] = current_team;  
 			++count;
             if(max){
-                long *temp = minimax(current_game, false, depth-1, alpha, beta, count);
+                array<long,4>temp = minimax(current_game, false, depth-1, alpha, beta, count);
 				score = temp[0];
 				count = temp[3];
                 if(score > alpha){
@@ -62,7 +62,7 @@ long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long bet
                     bestRow = move[i][1];
                 }
             }else{
-                long *temp = minimax(current_game, true, depth-1, alpha, beta, count);
+                array<long,4>temp = minimax(current_game, true, depth-1, alpha, beta, count);
 				score = temp[0];
 				count = temp[3];
                 if(score < beta){
@@ -74,7 +74,7 @@ long* AI::minimax(Board &current_game, bool max, int depth, long alpha, long bet
             current_game.cells[move[i][0]][move[i][1]] = 0;
             if(alpha >= beta) break;
         }
-		return new long[4] {(max) ? alpha : beta, bestCol, bestRow, count};
+		return array<long,4>{{(max) ? alpha : beta, bestCol, bestRow, count}};
     }
-    return new long[4]{0,0,0,0};
+    return array<long,4>{{0,0,0,0}};
 }

@@ -12,7 +12,7 @@ class Board{
         Board(int size = 3);
         ~Board();
         void print();
-        int* validateMove(int move);
+        std::array<int,2> validateMove(int move);
         void insertMove(int player, int col, int row);
         int win();
         long evaluate();

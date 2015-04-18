@@ -77,18 +77,18 @@ void Board::printMoves(){
 
 vector<array<int,2>> Board::getMoves(){
     vector<array<int,2>> moves;
-    
+
     for (int row=0; row < board_size; ++row){
         for(int col=0; col < board_size; ++col){
             if(cells[col][row] == 0){
-                moves.push_back({col,row});
+                moves.push_back(array<int, 2>{{col, row}});
             }
         }
     }
     return moves;
 }
 
-int* Board::validateMove(int move){
+array<int,2> Board::validateMove(int move){
     int count = 0;
     if(move > 0 && move <= board_size*board_size){
         for(int row=0; row < board_size; ++row){
@@ -96,15 +96,15 @@ int* Board::validateMove(int move){
                 ++count;
                 if(count == move){
                     if(cells[col][row] == 0){
-                        return new int[2] {col,row};
+                        return array<int,2>{{col,row}};
                     }else{
-                        return new int[2] {-1,-1};
+                        return array<int,2>{{-1,-1}};
                     }
                 }
             }
         }
     }
-    return new int[2] {-1,-1};
+    return array<int,2>{{-1,-1}};
 }
 
 void Board::insertMove(int player, int col, int row){

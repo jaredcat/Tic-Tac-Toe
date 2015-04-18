@@ -20,10 +20,10 @@ class AI : public Player{
         AI(std::string piece, int difficulty = 5) : Player(piece){
 			this->difficulty = difficulty;
         };
-        int* getAIMove(int team, Board &curent_game);
+        std::array<int,2> getAIMove(int team, Board &curent_game);
 		int difficulty;
     
     private:
-        long* minimax(Board &curent_game, bool max, int level = 2, long alpha = -2000000000, long beta = 2000000000, long count = 0);
+        std::array<long,4> minimax(Board &curent_game, bool max, int level = 2, long alpha = -2000000000, long beta = 2000000000, long count = 0);
 };
 #endif
