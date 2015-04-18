@@ -8,4 +8,7 @@ build: $(FILES)
 clean:
 	rm -f *.o core
 
-rebuild: clean build
+distclean: clean
+	rm -f *.exe
+
+rebuild: distclean build

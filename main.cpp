@@ -155,6 +155,5 @@ int main(){
       gameLoop(board, human1, human2); //game logic within the game is done here   
   }
   cout << endl;
-  //system("pause");
   return 0;
 }
