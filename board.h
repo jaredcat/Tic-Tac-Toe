@@ -20,7 +20,7 @@ class Board{
         std::vector<std::array<int,2>> getMoves();
         
     private:
-        std::string convertToPiece(int);
+        void convertToPiece(int);
 };
 
 #endif

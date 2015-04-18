@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <windows.h>
 using namespace std;
 
 
@@ -14,7 +15,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
     if(player1.piece == "X"){
         do{
             current_game.print();
-            current_game.printMoves();
+            //current_game.printMoves();
             cout << endl << endl << "Player 1:" << endl << "Select cell number: ";
             cin >> move;
             valid = current_game.validateMove(move);
@@ -25,7 +26,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
     do{
         do{
             current_game.print();
-            current_game.printMoves();
+            //current_game.printMoves();
             cout << endl << endl << "Player 2:" << endl << "Select cell: ";
             cin >> move;
             valid = current_game.validateMove(move);
@@ -66,7 +67,7 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
     if(human.piece == "X"){
         do{
             current_game.print();
-            current_game.printMoves();
+            //current_game.printMoves();
             cout << endl << "Select cell number: ";
             cin >> move;
             valid = current_game.validateMove(move);
@@ -86,7 +87,7 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
         //let human player make its move
         do{
             current_game.print();
-            current_game.printMoves();
+            //current_game.printMoves();
             cout << endl << "Select cell number: ";
             cin >> move;
             valid = current_game.validateMove(move);
@@ -99,10 +100,10 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
     current_game.print();
 	cout << endl;
 	if (human.team == winner){
-		cout << "Player 1 won.";
+		cout << "Human won.";
 	}
 	else if (ai.team == winner){
-		cout << "Player 2 won.";
+		cout << "AI won.";
 	}
 	else{
 		cout << "Tie game.";

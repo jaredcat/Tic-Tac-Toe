@@ -3,7 +3,10 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <stdio.h>
 using namespace std;
+
+#define CSI 0x1b
 
 Board::Board(int size){
     
@@ -32,13 +35,32 @@ Board::~Board(){
 }
 
 void Board::print(){
-    //for every cell
+    int count=1;
     cout << endl;
     for (int row=0; row < board_size; ++row){ //every row
-		for (int col = 0; col < board_size - 1; ++col){ //every column but the last
-			cout << " " << convertToPiece(cells[col][row]) << " |";
+		for (int col = 0; col < board_size; ++col){ //every column but the last
+            if(cells[col][row] == 0){
+                if(count<  10){
+                    cout << " " << count;
+                }else if(count < 100){
+                    cout << " " << count;
+                }else{
+                    cout << count;
+                }                
+            }else{
+                cout << " ";
+                convertToPiece(cells[col][row]);
+                printf("%c[%dm%s",CSI,37,"");
+            }
+            if(col != board_size-1){
+                if(count < 10 || cells[col][row] != 0){
+                    cout << " |";
+                }else{
+                    cout << "|";
+                }
+            }    
+            ++count;
 		}
-        cout << " " << convertToPiece(cells[board_size-1][row]); //last column
         cout << endl;
         if(row != board_size-1){ //last row doesn't need horizontal break lines
             for (int col=1; col < board_size; ++col)
@@ -49,16 +71,16 @@ void Board::print(){
 }
 
 //Converts numbers into letters
-string Board::convertToPiece(int cell){
+void Board::convertToPiece(int cell){
     switch(cell){
         case(1):
-            return "X";
+            printf("%c[%dm%s",CSI,32,"X");
             break;
         case(-1):
-            return "O";
+            printf("%c[%dm%s",CSI,31,"O");
             break;
         default:
-            return " ";
+            cout << " ";
     }
 }
 

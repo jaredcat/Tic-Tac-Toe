@@ -50,8 +50,8 @@ array<long,4> AI::minimax(Board &current_game, bool max, int depth, long alpha, 
     
     if(move.size() == 0 || depth == 0 || current_game.win() != 2){
         score = current_game.evaluate();
-		//current_game.print();
-		//cout << score;
+		current_game.print();
+		cout << score;
 		return array<long,4>{{score, bestCol, bestRow, count}};
     }else{
 		for (unsigned int i = 0; i < move.size(); ++i){
