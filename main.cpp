@@ -57,7 +57,7 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
 	}
 }
 
-void gameLoop(Board &current_game, Player &human, AI &ai){
+void gameLoop(Board &current_game, Player &human, AI &ai, bool trace){
     int winner = 0;
     int move = -1;
     array<int,2> aimove, valid;
@@ -76,9 +76,8 @@ void gameLoop(Board &current_game, Player &human, AI &ai){
     
     do{
         current_game.print();
-        
         //let AI player make its move
-        aimove = ai.getAIMove(ai.team, current_game);
+        aimove = ai.getAIMove(ai.team, current_game, trace);
         current_game.insertMove(ai.team, aimove[0], aimove[1]);
 		if ((winner = current_game.win()) < 2)
 			break;
@@ -121,6 +120,9 @@ int main(){
   int humans = 1;
   int difficulty = 3;
   string player = "X";
+  string trace = "N";
+  bool booltrace = false;
+  
   cout << endl << "Pick the size of the grid (default = 3): ";
   cin >> board_size;
   Board board(board_size); //initialize a new board
@@ -138,9 +140,18 @@ int main(){
       }while(player != "X" && player != "O");
       Player human(player); //initializes human player to their piece
       AI ai(oppositePiece(human.piece), difficulty); //initializes ai player to opposite piece
+      do{
+          trace.clear();
+          cout << "Display trace (Y/N): ";
+          cin >> trace;
+          trace = toupper(trace[0]);
+      }while(trace != "Y" && trace != "N");
+      booltrace = false;
+      if(trace == "Y")
+          booltrace = true;
       cout << endl << "You are " << human.piece;
       cout << endl << "AI is " << ai.piece << endl; 
-      gameLoop(board, human, ai); //game logic within the game is done here
+      gameLoop(board, human, ai, booltrace); //game logic within the game is done here
   }else if(humans == 2){
       do{
           player.clear();
