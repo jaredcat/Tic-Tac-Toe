@@ -36,20 +36,21 @@ void Board::print(){
     int count=1;
     cout << endl;
     for (int row=0; row < board_size; ++row){ //every row
-		for (int col = 0; col < board_size; ++col){ //every column but the last
-            if(cells[col][row] == 0){
-                if(count<  10){
+		for (int col = 0; col < board_size; ++col){ //every column
+            if(cells[col][row] == 0){ //if the cell is not occupied
+                //Adjust spacing for numbers length
+                if(count <  10){
                     cout << " " << count;
                 }else if(count < 100){
                     cout << " " << count;
                 }else{
                     cout << count;
                 }                
-            }else{
+            }else{ //cell is occupied
                 cout << " ";
-                convertToPiece(cells[col][row]);
+                convertToPiece(cells[col][row]); //print X or O
             }
-            if(col != board_size-1){
+            if(col != board_size-1){ //if not the last cell print a '|'
                 if(count < 10 || cells[col][row] != 0){
                     cout << " |";
                 }else{
@@ -58,7 +59,7 @@ void Board::print(){
             }    
             ++count;
 		}
-        cout << endl;
+        cout << endl; //new row
         if(row != board_size-1){ //last row doesn't need horizontal break lines
             for (int col=1; col < board_size; ++col)
                 cout << "----";
@@ -71,19 +72,19 @@ void Board::print(){
 void Board::convertToPiece(int cell){
     switch(cell){
         case(1):
-            printf("%c[%dm%s",0x1b,32,"X");
-            printf("%c[%dm%s",0x1b,37,"");
+            printf("%c[%dm%s",0x1b,32,"X"); //prints green X
+            printf("%c[%dm%s",0x1b,37,""); //sets text back to white
             break;
         case(-1):
-            printf("%c[%dm%s",0x1b,31,"O");
-            printf("%c[%dm%s",0x1b,37,"");
+            printf("%c[%dm%s",0x1b,31,"O"); //prints red O
+            printf("%c[%dm%s",0x1b,37,"");//sets text back to white
             break;
         default:
             cout << " ";
     }
 }
 
-void Board::printMoves(){
+/*void Board::printMoves(){
     int count = 0;
     cout << endl << "Moves: ";
     for (int row=0; row < board_size; ++row){
@@ -94,15 +95,15 @@ void Board::printMoves(){
             }
         }
     }
-}
+}*/
 
 vector<array<int,2>> Board::getMoves(){
-    vector<array<int,2>> moves;
+    vector<array<int,2>> moves; //vector of x,y coordinates
 
     for (int row=0; row < board_size; ++row){
         for(int col=0; col < board_size; ++col){
-            if(cells[col][row] == 0){
-                moves.push_back(array<int, 2>{{col, row}});
+            if(cells[col][row] == 0){ //cell not occupied
+                moves.push_back(array<int, 2>{{col, row}}); //adds possible move to stack
             }
         }
     }
@@ -111,15 +112,15 @@ vector<array<int,2>> Board::getMoves(){
 
 array<int,2> Board::validateMove(int move){
     int count = 0;
-    if(move > 0 && move <= board_size*board_size){
+    if(move > 0 && move <= board_size*board_size){ //checks if the cell requested even exists
         for(int row=0; row < board_size; ++row){
             for(int col=0; col < board_size; ++col){
                 ++count;
-                if(count == move){
-                    if(cells[col][row] == 0){
-                        return array<int,2>{{col,row}};
+                if(count == move){ //converts cell number into x,y coordinates
+                    if(cells[col][row] == 0){ //checks if its already occupied
+                        return array<int,2>{{col,row}}; //allow the move
                     }else{
-                        return array<int,2>{{-1,-1}};
+                        return array<int,2>{{-1,-1}}; //move rejected
                     }
                 }
             }
@@ -129,17 +130,19 @@ array<int,2> Board::validateMove(int move){
 }
 
 void Board::insertMove(int player, int col, int row){
-    cells[col][row] = player;
+    cells[col][row] = player; //occupies cell by a player
 }
 
 int Board::win(){
     //checks for horizontal win states
     for(int row=0; row < board_size; ++row){
         for(int col=1; col < board_size; ++col){
+            //if a cell is not occupied then a win is no possible in this row
+            //if two cells are not occupied by the same player then a win is not possible in this row
             if(cells[col-1][row] == 0 || cells[col][row] != cells[col-1][row]){
                 break;
-            }else if(col == board_size-1){
-                return cells[col][row];
+            }else if(col == board_size-1){ //reached the end of the row without detecting change in player or empty cell = win
+                return cells[col][row]; //return winning player
             }
         }
     }
@@ -147,29 +150,35 @@ int Board::win(){
     //Checks for any vertical win states
     for(int col=0; col < board_size; ++col){
         for(int row=1; row < board_size; ++row){
+            //if a cell is not occupied then a win is no possible in this column
+            //if two cells are not occupied by the same player then a win is not possible in this column
             if(cells[col][row-1] == 0 || cells[col][row] != cells[col][row-1]){
                 break;
-            }else if(row == board_size-1){
-                return cells[col][row];
+            }else if(row == board_size-1){ //reached the end of the column without detecting change in player or empty cell = win
+                return cells[col][row]; //return winning player
             }
         }
     }
     
     //checks for '\' win states
     for(int both=1; both < board_size; ++both){
+        //if a cell is not occupied then a win is no possible in this diagonal
+        //if two cells are not occupied by the same player then a win is not possible in this diagonal
         if(cells[both-1][both-1] == 0 || cells[both][both] != cells[both-1][both-1]){
             break;
-        }else if(both == board_size-1){
-            return cells[both][both];
+        }else if(both == board_size-1){//reached the end of the diagonal without detecting change in player or empty cell = win
+            return cells[both][both];//return winning player
         }
     }
     
     //checks for '/' win states
     for(int col=1, row = board_size-2; col < board_size; ++col, --row){
+        //if a cell is not occupied then a win is no possible in this diagonal
+        //if two cells are not occupied by the same player then a win is not possible in this diagonal
         if(cells[col-1][row+1] == 0 || cells[col][row] != cells[col-1][row+1]){
             break;
-        }else if(col == board_size-1){
-            return cells[col][row];
+        }else if(col == board_size-1){//reached the end of the diagonal without detecting change in player or empty cell = win
+            return cells[col][row];//return winning player
         }
     }
 
@@ -177,7 +186,7 @@ int Board::win(){
 	int no_tie = false;
 	for (int row = 0; row < board_size; ++row){
 		for (int col = 0; col < board_size; ++col){
-			if (cells[col][row] == 0){
+			if (cells[col][row] == 0){ //if there is an open cell then the game can continue
 				no_tie = true;
 			}
 			if (no_tie)
@@ -186,40 +195,40 @@ int Board::win(){
 		if (no_tie)
 			break;
 	}
-	if (!no_tie)
-		return 0;
+	if (!no_tie) //if every cell is occupied but no previous win was triggered
+		return 0; //0 = tie
 
-    return 2;
+    return 2; //2 = continue game
 }
 
 long Board::evaluate(){
-	long score = 0;
+	long score = 0; //single piece is worth 1 while consecutive pieces are worth *10
 	long temp_score = 0;
 
 	//evaluates rows
-	for (int row = 0; row < board_size; ++row){
-		for (int col = 0; col < board_size; col++){
-			if (cells[col][row] == 1){
-				temp_score = 1;
+	for (int row = 0; row < board_size; ++row){ //for every row
+		for (int col = 0; col < board_size; col++){ //look at every column
+			if (cells[col][row] == 1){ //if a row is "X"
+				temp_score = 1; //then positive score
 			}
-			else if (cells[col][row] == -1){
-				temp_score = -1;
+			else if (cells[col][row] == -1){ //if a row is "O"
+				temp_score = -1; //then negative score
 			}
 			else{
-				temp_score = 0;
+				temp_score = 0; //empty cell
 			}
-			if (cells[col][row] != 0 && !(col + 1 >= board_size)){
-				for (int i = col + 1; i < board_size; ++i, ++col){
-					if (cells[i - 1][row] == cells[i][row]){
-						temp_score *= 10;
+			if (cells[col][row] != 0 && !(col + 1 >= board_size)){ //if the cell is not empty and not at end of row
+				for (int i = col + 1; i < board_size; ++i, ++col){ //check every cell
+					if (cells[i - 1][row] == cells[i][row]){ //if the next cell is the same player
+						temp_score *= 10; //then score is worth *10
 					}
-					else{
-						col = i;
+					else{ //chain broken
+						col = i; //continue where left off
 						break;
 					}
 				}
 			}
-			score += temp_score;
+			score += temp_score; //add the score to the game state's total score
 		}
 	}
 
@@ -251,7 +260,7 @@ long Board::evaluate(){
 	}
 
 	//evaluates '\'
-	for (int both = 0; both < board_size; ++both){
+	for (int both = 0; both < board_size; ++both){ //increment x and y at the same rate
 		if (cells[both][both] == 1){
 			temp_score = 1;
 		}
@@ -276,7 +285,7 @@ long Board::evaluate(){
 	}
 
 	//evaluates '/'
-	for (int col = 0, row = board_size - 1; col < board_size; ++col, --row){
+	for (int col = 0, row = board_size - 1; col < board_size; ++col, --row){ //increments x and y inversely
 		if (cells[col][row] == 1){
 			temp_score = 1;
 		}
@@ -301,5 +310,5 @@ long Board::evaluate(){
 		score += temp_score;
 	}
 
-	return score;
+	return score; //sum of all pieces and chains of pieces of a board
 }

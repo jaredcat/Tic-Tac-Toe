@@ -7,10 +7,12 @@ using namespace std;
 
 
 void gameLoop(Board &current_game, Player &player1, Player &player2){
-    int winner = 0;
-    int move = -1;
+    int winner = 2; //2 = no win, 1 = X, 0 = Tie, -1 = O
+    int move;
+    int turn = -1;
     array<int,2> valid;
     
+    //If player 1 is X then let them make the first move
     if(player1.piece == "X"){
         do{
             current_game.print();
@@ -22,30 +24,29 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
         current_game.insertMove(player1.team, valid[0], valid[1]);
     }
     
-    do{
+    do{     
         do{
             current_game.print();
-            //current_game.printMoves();
-            cout << endl << endl << "Player 2:" << endl << "Select cell: ";
+            if(turn == 1){
+                cout << endl << endl << "Player 1:";
+            }else{
+                cout << endl << endl << "Player 2:";
+            }
+            cout << endl << "Select cell number: ";
             cin >> move;
-            valid = current_game.validateMove(move);
-        }while(valid[0] == -1);
-        current_game.insertMove(player2.team, valid[0], valid[1]);
-        if((winner = current_game.win()) < 2)
-            break;
-        
-        do{
-            current_game.print();
-            //current_game.printMoves();
-            cout << endl << endl << "Player 1:" << endl << "Select cell number: ";
-            cin >> move;
-            valid = current_game.validateMove(move);
-        }while(valid[0] == -1);
-        current_game.insertMove(player1.team, valid[0], valid[1]);
+            valid = current_game.validateMove(move); //checks if move is legal
+        }while(valid[0] == -1); //invalid moves return -1
+        if(turn == 1){
+            current_game.insertMove(player1.team, valid[0], valid[1]);
+            turn = -1;
+        }else{
+            current_game.insertMove(player2.team, valid[0], valid[1]);
+            turn = 1;
+        }
 		if ((winner = current_game.win()) < 2)
 			break;
-
 	}while (current_game.win() == 2);
+    
     current_game.print();
 	cout << endl;
     if(player1.team == winner){
@@ -58,15 +59,14 @@ void gameLoop(Board &current_game, Player &player1, Player &player2){
 }
 
 void gameLoop(Board &current_game, Player &human, AI &ai, bool trace){
-    int winner = 0;
-    int move = -1;
+    int winner = 0; //2 = no win, 1 = X, 0 = Tie, -1 = O
+    int move;
     array<int,2> aimove, valid;
     
     //if human player is X then let them move first
     if(human.piece == "X"){
         do{
             current_game.print();
-            //current_game.printMoves();
             cout << endl << "Select cell number: ";
             cin >> move;
             valid = current_game.validateMove(move);
@@ -129,9 +129,9 @@ int main(){
   board.print();
   cout << endl << "1 or 2 human players? ";
   cin >> humans;
-  if(humans == 1){
+  if(humans == 1){ //Human vs AI
       cout << "Select AI \"difficulty\"/depth (default = 3) : ";
-      cin >> difficulty;
+      cin >> difficulty; //sets the depth-bound
       do{
           player.clear();
           cout << "X or O (X moves first): ";
@@ -143,7 +143,7 @@ int main(){
       do{
           trace.clear();
           cout << "Display trace (Y/N): ";
-          cin >> trace;
+          cin >> trace; //sets whether or not to show AI's logic
           trace = toupper(trace[0]);
       }while(trace != "Y" && trace != "N");
       booltrace = false;
@@ -151,8 +151,8 @@ int main(){
           booltrace = true;
       cout << endl << "You are " << human.piece;
       cout << endl << "AI is " << ai.piece << endl; 
-      gameLoop(board, human, ai, booltrace); //game logic within the game is done here
-  }else if(humans == 2){
+      gameLoop(board, human, ai, booltrace); //game logic within is done here
+  }else if(humans == 2){ //Human vs Human
       do{
           player.clear();
           cout << "X or O (X moves first): ";
@@ -163,7 +163,7 @@ int main(){
       Player human2(oppositePiece(human1.piece)); //initializes player 2 to opposite piece
       cout << endl << "Player 1 is: " << human1.piece;
       cout << endl << "Player 2 is: " << human2.piece << endl; 
-      gameLoop(board, human1, human2); //game logic within the game is done here   
+      gameLoop(board, human1, human2); //game logic within is done here   
   }
   cout << endl;
   return 0;
