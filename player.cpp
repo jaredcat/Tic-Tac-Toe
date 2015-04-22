@@ -68,6 +68,10 @@ array<long,4> AI::minimax(Board &current_game, bool max, int depth, bool trace, 
     }else{
 		for (unsigned int i = 0; i < move.size(); ++i){ //for all possible moves at a state
             current_game.cells[move[i][0]][move[i][1]] = current_team; //make a move into the game
+            if(trace){ //shows states related to state
+                current_game.print();
+                cout << "Depth: " << this->difficulty - depth << endl;
+            }
 			++count; //counts how many moves made
             if(max){
                 array<long,4>temp = minimax(current_game, false, depth-1, trace, alpha, beta, count); //call minimax on the new game state for min
